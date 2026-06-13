@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>Bản đồ quản lý nông nghiệp - Demo</title>
+        <title>Demo Bản Đồ Số</title>
         <meta name="description" content="Giao diện demo bản đồ quản lý dữ liệu nông nghiệp" />
       </Head>
       <div className={styles.appShell}>

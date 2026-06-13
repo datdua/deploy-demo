@@ -52,7 +52,7 @@ export default function Header() {
     <header className={styles.header}>
       <div className={styles.headerBrand}>
         <MapIcon size={18} />
-        <span>Danh sách lớp dữ liệu</span>
+        <span>VNPT GREEN 2.0</span>
       </div>
 
       <div className={styles.headerSearch}>
