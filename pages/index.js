@@ -3,7 +3,7 @@ import Head from "next/head";
 import Header from "@/components/layout/Header";
 import LayerPanel from "@/components/layout/LayerPanel";
 import MapView from "@/components/map/MapView";
-import DataTablePanel from "@/components/layout/DataTablePanel"; // ⚠️ chỉnh lại đúng đường dẫn file của bạn
+import DataTablePanel from "@/components/layout/DataTablePanel";
 import styles from "@/styles/modules/Dashboard.module.css";
 
 export default function Home() {

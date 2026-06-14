@@ -9,7 +9,7 @@ import {
   EyeOff,
   Search,
   PanelLeftClose,
-  Table as TableIcon,
+  Table as TableIcon,s
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -135,15 +135,29 @@ export default function LayerPanel({ showDataTable, onToggleDataTable }) {
                 {group.layers.map((layer) => (
                   <div key={layer.id}>
                     <label className={styles.layerRow}>
-
                       <span
                         className={styles.layerDot}
                         style={{ backgroundColor: layer.color }}
                       />
-
                       <span className={styles.layerLabel}>
                         {layer.label}
                       </span>
+                      {layer.id === DATA_TABLE_LAYER_ID && (
+                        <div className={styles.dataTableToggleRow}>
+                          {/* <span className={styles.dataTableToggleLabel}>
+                          Bảng dữ liệu
+                        </span> */}
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 mr-1 text-muted-foreground flex-shrink-0"
+                            onClick={onToggleDataTable}
+                            title={showDataTable ? "Ẩn bảng dữ liệu" : "Hiện bảng dữ liệu"}
+                          >
+                            {showDataTable ? <Eye size={14} /> : <EyeOff size={14} />}
+                          </Button>
+                        </div>
+                      )}
                       <Button
                         variant="ghost"
                         size="icon"
@@ -154,26 +168,9 @@ export default function LayerPanel({ showDataTable, onToggleDataTable }) {
                         {layer.visible ? <Eye size={14} /> : <EyeOff size={14} />}
                       </Button>
                     </label>
-                    <label className={styles.layerRow}>
-                    {layer.id === DATA_TABLE_LAYER_ID && (
-                      <div className={styles.dataTableToggleRow}>
-                        <span className={styles.dataTableToggleLabel}>
-                          Bảng dữ liệu
-                        </span>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7 mr-1 text-muted-foreground flex-shrink-0"
-                          onClick={onToggleDataTable}
-                          title={showDataTable ? "Ẩn bảng dữ liệu" : "Hiện bảng dữ liệu"}
-                        >
-                          {showDataTable ? <Eye size={14} /> : <EyeOff size={14} />}
-                        </Button>
-                      </div>
-                    )}
-                    </label>
                   </div>
                 ))}
+
               </CollapsibleContent>
             </Collapsible>
           );
