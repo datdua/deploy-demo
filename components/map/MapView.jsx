@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Plus, Minus, Navigation, Compass, Maximize, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import SearchPanel from "@/components/layout/SearchPanel";
+import DataTablePanel from "@/components/layout/DataTablePanel";
 import {
   mapMarkers,
   mapToolButtons,
@@ -31,7 +33,7 @@ function getMarkerStyle(type) {
   return { color: "#64748b", size: "sm" };
 }
 
-export default function MapView() {
+export default function MapView({ showSearchPanel, onCloseSearchPanel, showDataTable, onCloseDataTable }) {
   const [activeMarker, setActiveMarker] = useState(null);
 
   return (
@@ -111,6 +113,11 @@ export default function MapView() {
           onClose={() => setActiveMarker(null)}
         />
       )}
+
+      {/* Panel "Tra cứu" + "Chi tiết" (mở từ icon search trên header) */}
+      {showSearchPanel && <SearchPanel onClose={onCloseSearchPanel} />}
+
+      {showDataTable && <DataTablePanel onClose={onCloseDataTable} />}  
     </div>
   );
 }

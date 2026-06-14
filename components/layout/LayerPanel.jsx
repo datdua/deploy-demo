@@ -8,14 +8,12 @@ import {
   Eye,
   EyeOff,
   Search,
-  Layers,
   PanelLeftClose,
-  Store,
-  Building2,
-  Tractor,
+  Table as TableIcon,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
@@ -27,17 +25,16 @@ import { layerGroups as initialLayerGroups } from "@/data/mapData";
 import styles from "@/styles/modules/Dashboard.module.css";
 
 const groupIconMap = {
-  Layers,
   Sprout,
   Beef,
   Fish,
-  Store,
-  Building2,
-  Tractor,
   Map: MapIcon,
 };
 
-export default function LayerPanel() {
+// Layer nào hiển thị dòng toggle "Bảng dữ liệu" ngay dưới nó
+const DATA_TABLE_LAYER_ID = "vung-canh-tac";
+
+export default function LayerPanel({ showDataTable, onToggleDataTable }) {
   const [groups, setGroups] = useState(initialLayerGroups);
   const [openGroups, setOpenGroups] = useState(
     initialLayerGroups.reduce((acc, g) => {
@@ -136,37 +133,52 @@ export default function LayerPanel() {
 
               <CollapsibleContent>
                 {group.layers.map((layer) => (
-                  <label key={layer.id} className={styles.layerRow}>
-                    {/* <Checkbox
-                      checked={layer.visible}
-                      onCheckedChange={() =>
-                        toggleLayerVisible(group.id, layer.id)
-                      }
-                    /> */}
-                    <span
-                      className={styles.layerDot}
-                      style={{ backgroundColor: layer.color }}
-                    />
-                    <span className={styles.layerLabel}>{layer.label}</span>
-                    {/* {layer.count !== null && (
-                      <span className={styles.layerCount}>{layer.count}</span>
-                    )} */}
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-7 w-7 mr-1 text-muted-foreground flex-shrink-0"
-                      onClick={() => toggleLayerVisible(group.id, layer.id)}
-                      title={layer.visible ? "Ẩn lớp" : "Hiện lớp"}
-                    >
-                      {layer.visible ? <Eye size={14} /> : <EyeOff size={14} />}
-                    </Button>
-                  </label>
+                  <div key={layer.id}>
+                    <label className={styles.layerRow}>
+
+                      <span
+                        className={styles.layerDot}
+                        style={{ backgroundColor: layer.color }}
+                      />
+
+                      <span className={styles.layerLabel}>
+                        {layer.label}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7 mr-1 text-muted-foreground flex-shrink-0"
+                        onClick={() => toggleLayerVisible(group.id, layer.id)}
+                        title={layer.visible ? "Ẩn lớp" : "Hiện lớp"}
+                      >
+                        {layer.visible ? <Eye size={14} /> : <EyeOff size={14} />}
+                      </Button>
+                    </label>
+                    <label className={styles.layerRow}>
+                    {layer.id === DATA_TABLE_LAYER_ID && (
+                      <div className={styles.dataTableToggleRow}>
+                        <span className={styles.dataTableToggleLabel}>
+                          Bảng dữ liệu
+                        </span>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7 mr-1 text-muted-foreground flex-shrink-0"
+                          onClick={onToggleDataTable}
+                          title={showDataTable ? "Ẩn bảng dữ liệu" : "Hiện bảng dữ liệu"}
+                        >
+                          {showDataTable ? <Eye size={14} /> : <EyeOff size={14} />}
+                        </Button>
+                      </div>
+                    )}
+                    </label>
+                  </div>
                 ))}
-            </CollapsibleContent>
+              </CollapsibleContent>
             </Collapsible>
-      );
+          );
         })}
-    </ScrollArea>
-    </aside >
+      </ScrollArea>
+    </aside>
   );
 }

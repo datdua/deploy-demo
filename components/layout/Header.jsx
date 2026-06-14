@@ -18,7 +18,7 @@ const iconMap = {
   Share2,
 };
 
-export default function Header() {
+export default function Header({ onToggleSearchPanel, isSearchPanelOpen }) {
   // Lưu id của tab đang mở panel (hanh-chinh / cong-ty-htx), null nếu không có panel nào mở
   const [openTab, setOpenTab] = useState(null);
   // Trạng thái mở/đóng popup "Tìm kiếm nâng cao" (icon filter)
@@ -116,6 +116,22 @@ export default function Header() {
                   />
                 )}
               </div>
+            );
+          }
+
+          // Icon "search" mở/đóng panel "Tra cứu" + "Chi tiết" trên bản đồ
+          if (action.id === "search") {
+            return (
+              <Button
+                key={action.id}
+                variant={isSearchPanelOpen ? "secondary" : "ghost"}
+                size="icon"
+                className="h-8 w-8 text-muted-foreground"
+                title={action.tooltip}
+                onClick={onToggleSearchPanel}
+              >
+                <Icon size={16} />
+              </Button>
             );
           }
 
