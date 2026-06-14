@@ -9,7 +9,11 @@ import {
   EyeOff,
   Search,
   PanelLeftClose,
-  Table as TableIcon,s
+    Layers,
+    Store,
+  Building2,
+  Tractor,
+  Table as TableIcon,
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -25,9 +29,13 @@ import { layerGroups as initialLayerGroups } from "@/data/mapData";
 import styles from "@/styles/modules/Dashboard.module.css";
 
 const groupIconMap = {
+  Layers,
   Sprout,
   Beef,
   Fish,
+  Store,
+  Building2,
+  Tractor,
   Map: MapIcon,
 };
 
@@ -154,7 +162,7 @@ export default function LayerPanel({ showDataTable, onToggleDataTable }) {
                             onClick={onToggleDataTable}
                             title={showDataTable ? "Ẩn bảng dữ liệu" : "Hiện bảng dữ liệu"}
                           >
-                            {showDataTable ? <Eye size={14} /> : <EyeOff size={14} />}
+                            {/* {showDataTable ? <Eye size={14} /> : <EyeOff size={14} />} */}
                           </Button>
                         </div>
                       )}
