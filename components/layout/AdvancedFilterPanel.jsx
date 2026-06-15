@@ -101,6 +101,32 @@ function getAllowedOptions(layerId, fieldId, fieldDef, filters) {
         );
     }
 
+    // Pattern 3: multiSource + filterByGroup, KHÔNG có rules
+    if (rule.multiSource && rule.filterByGroup) {
+    const activeSource = rule.sources.find(
+        (srcId) => getFieldValue(filters, srcId) !== ""
+    );
+    if (!activeSource) return fieldDef?.options ?? [];
+
+    const sourceValue = getFieldValue(filters, activeSource);
+
+    if (!rule.transitiveVia || activeSource === rule.transitiveVia) {
+        return (fieldDef?.options ?? []).filter(
+            (opt) => opt.group === sourceValue
+        );
+    }
+
+    const viaFieldDef = getFilterFields(layerId).find(
+        (f) => f.id === rule.transitiveVia
+    );
+    const allowedGroups = (viaFieldDef?.options ?? [])
+        .filter((opt) => opt.group === sourceValue)
+        .map((opt) => opt.value);
+
+    return (fieldDef?.options ?? []).filter((opt) =>
+        allowedGroups.includes(opt.group)
+    );
+}
     return fieldDef?.options ?? [];
 }
 

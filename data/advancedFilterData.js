@@ -1,48 +1,26 @@
-// data/advancedFilterData.js
-// Dữ liệu giả lập cho popup "Tìm kiếm nâng cao" (lọc theo lớp dữ liệu)
-
-// Mỗi lớp dữ liệu (layer id trong layerGroups) có một danh sách "trường lọc" riêng.
-// Mỗi trường lọc có loại (type) và danh sách giá trị có thể chọn (options).
-// type: "text"  -> dropdown chọn giá trị cố định
-//       "number" -> cũng hiển thị dạng dropdown chọn giá trị cố định (theo yêu cầu demo)
 export const fieldDependencies = {
     "cong-ty-htx": [
         {
-            // "Loài nuôi trồng" phụ thuộc "Lĩnh vực"
             target: "loai-nuoi-trong",
-            source: "nhom-nuoi-trong",
-            filterByGroup: true, // filter options theo opt.group thay vì opt.value
-            // Với mỗi giá trị của source, target chỉ được chọn các value này
-            // rules: {
-            //     "": ["trong-trot", "chan-nuoi", "thuy-san"], // chưa chọn lĩnh vực -> full
-            //     "trong-trot": ["trong-trot"],
-            //     "chan-nuoi": ["chan-nuoi"],
-            //     "thuy-san": ["thuy-san"]
-            // }
+            multiSource: true,
+            sources: ["nhom-nuoi-trong", "linh-vuc"],
+            filterByGroup: true,
+            transitiveVia: "nhom-nuoi-trong",
         },
         {
-            // "Nhóm nuôi trồng" phụ thuộc "Lĩnh vực"
             target: "nhom-nuoi-trong",
             source: "linh-vuc",
-            filterByGroup: true, // filter options theo opt.group thay vì opt.value
-            // Với mỗi giá trị của source, target chỉ được chọn các value này
+            filterByGroup: true,
             rules: {
-                "": ["trong-trot", "chan-nuoi", "thuy-san"], // chưa chọn lĩnh vực -> full
+                "": ["trong-trot", "chan-nuoi", "thuy-san"],
                 "trong-trot": ["trong-trot"],
                 "chan-nuoi": ["chan-nuoi"],
                 "thuy-san": ["thuy-san"]
             }
         },
         {
-            // "Loại cây trồng" chỉ được chọn (không bị khoá) khi:
-            // - "Lĩnh vực" chưa chọn, hoặc = "Trồng trọt", hoặc
-            // - "Loài nuôi trồng" chưa chọn, hoặc = "Loài cây trồng" (trong-trot)
-            // Nếu không thoả -> field bị disable hoàn toàn (lockField).
             target: "loai-cay-trong",
-            // Có thể phụ thuộc nhiều field nguồn -> dùng "sources"
             sources: ["linh-vuc"],
-            // allowedValues: field nguồn có giá trị nằm trong list này
-            // (hoặc rỗng "") thì KHÔNG khoá field target.
             allowedValues: {
                 "linh-vuc": ["", "trong-trot"],
             }
@@ -51,24 +29,23 @@ export const fieldDependencies = {
             target: "loai-vat-nuoi",
             sources: ["linh-vuc"],
             allowedValues: {
-                "linh-vuc": ["", "chan-nuoi"], // chỉ không khoá khi Lĩnh vực = Chăn nuôi hoặc chưa chọn
+                "linh-vuc": ["", "chan-nuoi"],
             }
         },
         {
             target: "loai-thuy-san",
             sources: ["linh-vuc"],
             allowedValues: {
-                "linh-vuc": ["", "thuy-san"], // chỉ không khoá khi Lĩnh vực = Thuỷ sản hoặc chưa chọn
+                "linh-vuc": ["", "thuy-san"],
             }
         },
         {
             target: "dich-benh",
             multiSource: true,
             sources: ["loai-nuoi-trong", "linh-vuc"],
-            // filter theo opt.group thay vì opt.value
             filterByGroup: true,
             rules: {
-                "": ["chan-nuoi", "thuy-san", "trong-trot"], // full
+                "": ["chan-nuoi", "thuy-san", "trong-trot"],
                 "trong-trot": ["trong-trot"],
                 "chan-nuoi": ["chan-nuoi"],
                 "thuy-san": ["thuy-san"]
@@ -77,27 +54,18 @@ export const fieldDependencies = {
     ],
     "vung-canh-tac": [
         {
-            // "Loài nuôi trồng" phụ thuộc "Lĩnh vực"
             target: "loai-nuoi-trong",
             source: "linh-vuc",
-            // Với mỗi giá trị của source, target chỉ được chọn các value này
             rules: {
-                "": ["trong-trot", "chan-nuoi", "thuy-san"], // chưa chọn lĩnh vực -> full
+                "": ["trong-trot", "chan-nuoi", "thuy-san"],
                 "trong-trot": ["trong-trot"],
                 "chan-nuoi": ["chan-nuoi"],
                 "thuy-san": ["thuy-san"]
             }
         },
         {
-            // "Loại cây trồng" chỉ được chọn (không bị khoá) khi:
-            // - "Lĩnh vực" chưa chọn, hoặc = "Trồng trọt", hoặc
-            // - "Loài nuôi trồng" chưa chọn, hoặc = "Loài cây trồng" (trong-trot)
-            // Nếu không thoả -> field bị disable hoàn toàn (lockField).
             target: "loai-cay-trong",
-            // Có thể phụ thuộc nhiều field nguồn -> dùng "sources"
             sources: ["linh-vuc", "loai-nuoi-trong"],
-            // allowedValues: field nguồn có giá trị nằm trong list này
-            // (hoặc rỗng "") thì KHÔNG khoá field target.
             allowedValues: {
                 "linh-vuc": ["", "trong-trot"],
                 "loai-nuoi-trong": ["", "trong-trot"]
@@ -107,26 +75,25 @@ export const fieldDependencies = {
             target: "loai-vat-nuoi",
             sources: ["linh-vuc", "loai-nuoi-trong"],
             allowedValues: {
-                "linh-vuc": ["", "chan-nuoi"], // chỉ không khoá khi Lĩnh vực = Chăn nuôi hoặc chưa chọn
-                "loai-nuoi-trong": ["", "chan-nuoi"] // chỉ không khoá khi Loài = Loài vật nuôi hoặc chưa chọn
+                "linh-vuc": ["", "chan-nuoi"],
+                "loai-nuoi-trong": ["", "chan-nuoi"]
             }
         },
         {
             target: "loai-thuy-san",
             sources: ["linh-vuc", "loai-nuoi-trong"],
             allowedValues: {
-                "linh-vuc": ["", "thuy-san"], // chỉ không khoá khi Lĩnh vực = Thuỷ sản hoặc chưa chọn
-                "loai-nuoi-trong": ["", "thuy-san"] // chỉ không khoá khi Loài = Loài thuỷ sản hoặc chưa chọn
+                "linh-vuc": ["", "thuy-san"],
+                "loai-nuoi-trong": ["", "thuy-san"]
             }
         },
         {
             target: "dich-benh",
             multiSource: true,
             sources: ["loai-nuoi-trong", "linh-vuc"],
-            // filter theo opt.group thay vì opt.value
             filterByGroup: true,
             rules: {
-                "": ["chan-nuoi", "thuy-san", "trong-trot"], // full
+                "": ["chan-nuoi", "thuy-san", "trong-trot"],
                 "trong-trot": ["trong-trot"],
                 "chan-nuoi": ["chan-nuoi"],
                 "thuy-san": ["thuy-san"]
@@ -135,27 +102,18 @@ export const fieldDependencies = {
     ],
     "vung-dich-benh": [
         {
-            // "Loài nuôi trồng" phụ thuộc "Lĩnh vực"
             target: "loai-nuoi-trong",
             source: "linh-vuc",
-            // Với mỗi giá trị của source, target chỉ được chọn các value này
             rules: {
-                "": ["trong-trot", "chan-nuoi", "thuy-san"], // chưa chọn lĩnh vực -> full
+                "": ["trong-trot", "chan-nuoi", "thuy-san"],
                 "trong-trot": ["trong-trot"],
                 "chan-nuoi": ["chan-nuoi"],
                 "thuy-san": ["thuy-san"]
             }
         },
         {
-            // "Loại cây trồng" chỉ được chọn (không bị khoá) khi:
-            // - "Lĩnh vực" chưa chọn, hoặc = "Trồng trọt", hoặc
-            // - "Loài nuôi trồng" chưa chọn, hoặc = "Loài cây trồng" (trong-trot)
-            // Nếu không thoả -> field bị disable hoàn toàn (lockField).
             target: "loai-cay-trong",
-            // Có thể phụ thuộc nhiều field nguồn -> dùng "sources"
             sources: ["linh-vuc", "loai-nuoi-trong"],
-            // allowedValues: field nguồn có giá trị nằm trong list này
-            // (hoặc rỗng "") thì KHÔNG khoá field target.
             allowedValues: {
                 "linh-vuc": ["", "trong-trot"],
                 "loai-nuoi-trong": ["", "trong-trot"]
@@ -165,26 +123,25 @@ export const fieldDependencies = {
             target: "loai-vat-nuoi",
             sources: ["linh-vuc", "loai-nuoi-trong"],
             allowedValues: {
-                "linh-vuc": ["", "chan-nuoi"], // chỉ không khoá khi Lĩnh vực = Chăn nuôi hoặc chưa chọn
-                "loai-nuoi-trong": ["", "chan-nuoi"] // chỉ không khoá khi Loài = Loài vật nuôi hoặc chưa chọn
+                "linh-vuc": ["", "chan-nuoi"],
+                "loai-nuoi-trong": ["", "chan-nuoi"]
             }
         },
         {
             target: "loai-thuy-san",
             sources: ["linh-vuc", "loai-nuoi-trong"],
             allowedValues: {
-                "linh-vuc": ["", "thuy-san"], // chỉ không khoá khi Lĩnh vực = Thuỷ sản hoặc chưa chọn
-                "loai-nuoi-trong": ["", "thuy-san"] // chỉ không khoá khi Loài = Loài thuỷ sản hoặc chưa chọn
+                "linh-vuc": ["", "thuy-san"],
+                "loai-nuoi-trong": ["", "thuy-san"]
             }
         },
         {
             target: "dich-benh",
             multiSource: true,
             sources: ["loai-nuoi-trong", "linh-vuc"],
-            // filter theo opt.group thay vì opt.value
             filterByGroup: true,
             rules: {
-                "": ["chan-nuoi", "thuy-san", "trong-trot"], // full
+                "": ["chan-nuoi", "thuy-san", "trong-trot"],
                 "trong-trot": ["trong-trot"],
                 "chan-nuoi": ["chan-nuoi"],
                 "thuy-san": ["thuy-san"]
@@ -192,7 +149,6 @@ export const fieldDependencies = {
         }
     ]
 };
-
 export const filterFieldsByLayer = {
     "cong-ty-htx": [
         {
@@ -210,7 +166,6 @@ export const filterFieldsByLayer = {
             label: "Nhóm nuôi trồng",
             type: "text",
             options: [
-                // Trồng trọt
                 {
                     value: "cay-luong-thuc",
                     group: "trong-trot",
@@ -254,8 +209,6 @@ export const filterFieldsByLayer = {
                     group: "trong-trot",
                     label: "Cây thức ăn chăn nuôi"
                 },
-
-                // Chăn nuôi
                 {
                     value: "gia-suc-lon",
                     group: "chan-nuoi",
@@ -293,8 +246,6 @@ export const filterFieldsByLayer = {
                     group: "chan-nuoi",
                     label: "Chăn nuôi hữu cơ"
                 },
-
-                // Thủy sản
                 {
                     value: "nuoi-ca-nuoc-ngot",
                     group: "thuy-san",
@@ -343,175 +294,74 @@ export const filterFieldsByLayer = {
             label: "Loài nuôi trồng",
             type: "text",
             options: [
-                // Cây lương thực
                 { value: "lua", group: "cay-luong-thuc", label: "Lúa" },
                 { value: "ngo", group: "cay-luong-thuc", label: "Ngô" },
                 { value: "san", group: "cay-luong-thuc", label: "Sắn" },
-
-                // Cây thực phẩm
                 { value: "dau-tuong", group: "cay-thuc-pham", label: "Đậu tương" },
                 { value: "lac", group: "cay-thuc-pham", label: "Lạc" },
                 { value: "dau-xanh", group: "cay-thuc-pham", label: "Đậu xanh" },
-
-                // Cây ăn quả
                 { value: "cam", group: "cay-an-qua", label: "Cam" },
                 { value: "buoi", group: "cay-an-qua", label: "Bưởi" },
                 { value: "xoai", group: "cay-an-qua", label: "Xoài" },
                 { value: "sau-rieng", group: "cay-an-qua", label: "Sầu riêng" },
-
-                // Cây công nghiệp ngắn ngày
                 { value: "mia", group: "cay-cong-nghiep-ngan-ngay", label: "Mía" },
                 { value: "thuoc-la", group: "cay-cong-nghiep-ngan-ngay", label: "Thuốc lá" },
                 { value: "bong-vai", group: "cay-cong-nghiep-ngan-ngay", label: "Bông vải" },
-
-                // Cây công nghiệp lâu năm
                 { value: "ca-phe", group: "cay-cong-nghiep-lau-nam", label: "Cà phê" },
                 { value: "cao-su", group: "cay-cong-nghiep-lau-nam", label: "Cao su" },
                 { value: "ho-tieu", group: "cay-cong-nghiep-lau-nam", label: "Hồ tiêu" },
-
-                // Cây dược liệu
                 { value: "nghe", group: "cay-duoc-lieu", label: "Nghệ" },
                 { value: "gung", group: "cay-duoc-lieu", label: "Gừng" },
                 { value: "dinh-lang", group: "cay-duoc-lieu", label: "Đinh lăng" },
-
-                // Cây gia vị
                 { value: "ot", group: "cay-gia-vi", label: "Ớt" },
                 { value: "toi", group: "cay-gia-vi", label: "Tỏi" },
                 { value: "hanh", group: "cay-gia-vi", label: "Hành" },
-
-                // Cây hoa
                 { value: "hoa-hong", group: "cay-hoa", label: "Hoa hồng" },
                 { value: "hoa-cuc", group: "cay-hoa", label: "Hoa cúc" },
                 { value: "hoa-lan", group: "cay-hoa", label: "Hoa lan" },
-
-                // Cây cảnh
                 { value: "mai-vang", group: "cay-canh", label: "Mai vàng" },
                 { value: "dao", group: "cay-canh", label: "Đào" },
                 { value: "sanh", group: "cay-canh", label: "Sanh" },
-
-                // Rau màu
                 { value: "rau-muong", group: "rau-mau", label: "Rau muống" },
                 { value: "cai-xanh", group: "rau-mau", label: "Cải xanh" },
                 { value: "xa-lach", group: "rau-mau", label: "Xà lách" },
-
-                // Cây thức ăn chăn nuôi
                 { value: "co-voi", group: "cay-thuc-an-chan-nuoi", label: "Cỏ voi" },
                 { value: "ngo-sinh-khoi", group: "cay-thuc-an-chan-nuoi", label: "Ngô sinh khối" },
                 { value: "co-ghine", group: "cay-thuc-an-chan-nuoi", label: "Cỏ Ghine" },
-
-                // Gia súc lớn
                 { value: "bo", group: "gia-suc-lon", label: "Bò" },
                 { value: "trau", group: "gia-suc-lon", label: "Trâu" },
-
-                // Gia súc nhỏ
                 { value: "heo", group: "gia-suc-nho", label: "Heo" },
                 { value: "de", group: "gia-suc-nho", label: "Dê" },
                 { value: "cuu", group: "gia-suc-nho", label: "Cừu" },
-
-                // Gia cầm
                 { value: "ga", group: "gia-cam", label: "Gà" },
                 { value: "vit", group: "gia-cam", label: "Vịt" },
                 { value: "chim-cut", group: "gia-cam", label: "Chim cút" },
-
-                // Ong
                 { value: "ong-mat", group: "ong", label: "Ong mật" },
                 { value: "ong-ruoi", group: "ong", label: "Ong ruồi" },
-
-                // Động vật đặc sản
                 { value: "nhim", group: "dong-vat-dac-san", label: "Nhím" },
                 { value: "dui", group: "dong-vat-dac-san", label: "Dúi" },
                 { value: "huou", group: "dong-vat-dac-san", label: "Hươu" },
-
-                // Nuôi cá nước ngọt
                 { value: "ca-tra", group: "nuoi-ca-nuoc-ngot", label: "Cá tra" },
                 { value: "ca-ro-phi", group: "nuoi-ca-nuoc-ngot", label: "Cá rô phi" },
                 { value: "ca-chep", group: "nuoi-ca-nuoc-ngot", label: "Cá chép" },
-
-                // Nuôi cá nước lợ
                 { value: "ca-doi", group: "nuoi-ca-nuoc-lo", label: "Cá đối" },
                 { value: "ca-khoai", group: "nuoi-ca-nuoc-lo", label: "Cá khoai" },
-
-                // Nuôi cá biển
                 { value: "ca-ngu", group: "nuoi-ca-bien", label: "Cá ngừ" },
                 { value: "ca-mu", group: "nuoi-ca-bien", label: "Cá mú" },
-
-                // Nuôi tôm
                 { value: "tom-su", group: "nuoi-tom", label: "Tôm sú" },
                 { value: "tom-the", group: "nuoi-tom", label: "Tôm thẻ chân trắng" },
-
-                // Nuôi cua ghẹ
                 { value: "cua-bien", group: "nuoi-cua-ghe", label: "Cua biển" },
                 { value: "ghe-xanh", group: "nuoi-cua-ghe", label: "Ghẹ xanh" },
-
-                // Nuôi nhuyễn thể
                 { value: "hau", group: "nuoi-nhuyen-the", label: "Hàu" },
                 { value: "ngheu", group: "nuoi-nhuyen-the", label: "Nghêu" },
-
-                // Nuôi thủy sản đặc sản
                 { value: "tom-hum", group: "nuoi-thuy-san-dac-san", label: "Tôm hùm" },
                 { value: "ba-ba", group: "nuoi-thuy-san-dac-san", label: "Ba ba" },
-
-                // Nuôi thủy sản nước lạnh
                 { value: "ca-hoi", group: "nuoi-thuy-san-nuoc-lanh", label: "Cá hồi" },
                 { value: "ca-tam", group: "nuoi-thuy-san-nuoc-lanh", label: "Cá tầm" },
-
-                // Nuôi thủy sản công nghệ cao
                 { value: "tom-cong-nghe-cao", group: "nuoi-thuy-san-cong-nghe-cao", label: "Tôm công nghệ cao" },
                 { value: "ca-cong-nghe-cao", group: "nuoi-thuy-san-cong-nghe-cao", label: "Cá công nghệ cao" }
             ]
         },
-        // {
-        //     id: "loai-nuoi-trong",
-        //     label: "Loài nuôi trồng",
-        //     type: "text",
-        //     options: [
-        //         { value: "trong-trot", label: "Loài cây trồng" },
-        //         { value: "chan-nuoi", label: "Loài vật nuôi" },
-        //         { value: "thuy-san", label: "Loài thuỷ sản" }
-        //     ]
-        // },
-        // {
-        //     id: "nhom-nong-nghiep",
-        //     label: "Nhóm nông nghiệp",
-        //     type: "text",
-        //     options: [
-        //         { value: "trong-trot", label: "Nhóm cây ăn quả" },
-        //         { value: "chan-nuoi", label: "Nhóm gia cầm" },
-        //         { value: "thuy-san", label: "Nhóm thuỷ sản nuôi lồng" }
-        //     ]
-        // },
-        // {
-        //     id: "loai-cay-trong",
-        //     label: "Loại cây trồng",
-        //     type: "text",
-        //     options: [
-        //         { value: "lua", label: "Lúa" },
-        //         { value: "dau-xanh", label: "Đậu xanh" },
-        //         { value: "cu-dau", label: "Củ đậu" },
-        //         { value: "mia", label: "Mía" }
-        //     ]
-        // },
-        // {
-        //     id: "loai-vat-nuoi",
-        //     label: "Loại vật nuôi",
-        //     type: "text",
-        //     options: [
-        //         { value: "ga", label: "Gà" },
-        //         { value: "bo", label: "Bò" },
-        //         { value: "heo", label: "Heo" },
-        //         { value: "chuot", label: "Chuột" }
-        //     ]
-        // },
-        // {
-        //     id: "loai-thuy-san",
-        //     label: "Loại thuỷ sản",
-        //     type: "text",
-        //     options: [
-        //         { value: "tom", label: "Tôm" },
-        //         { value: "ca-tra", label: "Cá tra" },
-        //         { value: "ca-loc", label: "Cá lóc" }
-        //     ]
-        // },
         {
             id: "mo-hinh",
             label: "Mô hình doanh nghiệp",
@@ -539,7 +389,6 @@ export const filterFieldsByLayer = {
             label: "Dịch bệnh/Dịch hại",
             type: "select",
             options: [
-                // Chăn nuôi
                 {
                     value: "cn-01",
                     group: "chan-nuoi",
@@ -561,7 +410,6 @@ export const filterFieldsByLayer = {
                     group: "chan-nuoi",
                     label: "Bệnh phải giám sát định kỳ"
                 },
-                // Thuỷ sản
                 {
                     value: "ts-01",
                     group: "thuy-san",
@@ -582,7 +430,6 @@ export const filterFieldsByLayer = {
                     group: "thuy-san",
                     label: "Bệnh thủy sản mới nổi cần theo dõi"
                 },
-                // Trồng trọt
                 {
                     value: "tt-01",
                     group: "trong-trot",
@@ -622,16 +469,6 @@ export const filterFieldsByLayer = {
                 { value: "thuy-san", label: "Loài thuỷ sản" }
             ]
         },
-        // {
-        //     id: "nhom-nong-nghiep",
-        //     label: "Nhóm nông nghiệp",
-        //     type: "text",
-        //     options: [
-        //         { value: "trong-trot", label: "Nhóm cây ăn quả" },
-        //         { value: "chan-nuoi", label: "Nhóm gia cầm" },
-        //         { value: "thuy-san", label: "Nhóm thuỷ sản nuôi lồng" }
-        //     ]
-        // },
         {
             id: "loai-cay-trong",
             label: "Loại cây trồng",
@@ -691,7 +528,6 @@ export const filterFieldsByLayer = {
             label: "Dịch bệnh/Dịch hại",
             type: "select",
             options: [
-                // Chăn nuôi
                 {
                     value: "cn-01",
                     group: "chan-nuoi",
@@ -713,7 +549,6 @@ export const filterFieldsByLayer = {
                     group: "chan-nuoi",
                     label: "Bệnh phải giám sát định kỳ"
                 },
-                // Thuỷ sản
                 {
                     value: "ts-01",
                     group: "thuy-san",
@@ -734,7 +569,6 @@ export const filterFieldsByLayer = {
                     group: "thuy-san",
                     label: "Bệnh thủy sản mới nổi cần theo dõi"
                 },
-                // Trồng trọt
                 {
                     value: "tt-01",
                     group: "trong-trot",
@@ -774,16 +608,6 @@ export const filterFieldsByLayer = {
                 { value: "thuy-san", label: "Loài thuỷ sản" }
             ]
         },
-        // {
-        //     id: "nhom-nong-nghiep",
-        //     label: "Nhóm nông nghiệp",
-        //     type: "text",
-        //     options: [
-        //         { value: "trong-trot", label: "Nhóm cây ăn quả" },
-        //         { value: "chan-nuoi", label: "Nhóm gia cầm" },
-        //         { value: "thuy-san", label: "Nhóm thuỷ sản nuôi lồng" }
-        //     ]
-        // },
         {
             id: "loai-cay-trong",
             label: "Loại cây trồng",
@@ -843,7 +667,6 @@ export const filterFieldsByLayer = {
             label: "Dịch bệnh/Dịch hại",
             type: "select",
             options: [
-                // Chăn nuôi
                 {
                     value: "cn-01",
                     group: "chan-nuoi",
@@ -865,7 +688,6 @@ export const filterFieldsByLayer = {
                     group: "chan-nuoi",
                     label: "Bệnh phải giám sát định kỳ"
                 },
-                // Thuỷ sản
                 {
                     value: "ts-01",
                     group: "thuy-san",
@@ -886,7 +708,6 @@ export const filterFieldsByLayer = {
                     group: "thuy-san",
                     label: "Bệnh thủy sản mới nổi cần theo dõi"
                 },
-                // Trồng trọt
                 {
                     value: "tt-01",
                     group: "trong-trot",
@@ -905,7 +726,6 @@ export const filterFieldsByLayer = {
             ]
         }
     ],
-
     "vung-nuoi-trong": [
         {
             id: "loai-thuy-san",
@@ -928,31 +748,6 @@ export const filterFieldsByLayer = {
             ]
         }
     ],
-
-    // "vung-dich-benh": [
-    //     {
-    //         id: "loai-dich-benh",
-    //         label: "Loại dịch bệnh",
-    //         type: "text",
-    //         options: [
-    //             { value: "dao-on", label: "Đạo ôn" },
-    //             { value: "sau-cuon-la", label: "Sâu cuốn lá" },
-    //             { value: "vang-lun", label: "Vàng lùn xoắn lá" },
-    //             { value: "dich-ta-heo", label: "Dịch tả heo Châu Phi" }
-    //         ]
-    //     },
-    //     {
-    //         id: "muc-do",
-    //         label: "Mức độ ảnh hưởng",
-    //         type: "text",
-    //         options: [
-    //             { value: "nhe", label: "Nhẹ" },
-    //             { value: "trung-binh", label: "Trung bình" },
-    //             { value: "nang", label: "Nặng" }
-    //         ]
-    //     }
-    // ],
-
     "trang-trai": [
         {
             id: "loai-vat-nuoi",
@@ -977,9 +772,6 @@ export const filterFieldsByLayer = {
         }
     ]
 };
-
-// Trường lọc mặc định dùng khi một lớp dữ liệu chưa được khai báo
-// danh sách trường lọc riêng trong filterFieldsByLayer.
 export const defaultFilterFields = [
     {
         id: "ghi-chu",
