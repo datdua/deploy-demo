@@ -8,6 +8,17 @@ export const fieldDependencies = {
             transitiveVia: "nhom-nuoi-trong",
         },
         {
+            target: "tac-nhan-gay-benh",
+            source: "linh-vuc",
+            filterByGroup: true,
+            rules: {
+                "": ["trong-trot", "chan-nuoi", "thuy-san"],
+                "trong-trot": ["trong-trot"],
+                "chan-nuoi": ["chan-nuoi"],
+                "thuy-san": ["thuy-san"]
+            }
+        },
+        {
             target: "nhom-nuoi-trong",
             source: "linh-vuc",
             filterByGroup: true,
@@ -446,6 +457,53 @@ export const filterFieldsByLayer = {
                     label: "Vật thể phải phân tích nguy cơ khi NK"
                 }
             ]
+        },
+        {
+            id: "tac-nhan-gay-benh",
+            label: "Tác nhân gây bệnh",
+            type: "text",
+            options: [
+                {
+                    value: "virus-va-viroid",
+                    group: ["trong-trot", "chan-nuoi", "thuy-san"],
+                    label: "Virus và viroid"
+                },
+                {
+                    value: "vi-khuan",
+                    group: ["trong-trot", "chan-nuoi", "thuy-san"],
+                    label: "Vi khuẩn"
+                },
+                {
+                    value: "nam",
+                    group: ["trong-trot", "chan-nuoi", "thuy-san"],
+                    label: "Nấm"
+                },
+                {
+                    value: "ky-sinh-trung",
+                    group: ["trong-trot", "chan-nuoi", "thuy-san"],
+                    label: "Ký sinh trùng"
+                },
+                {
+                    value: "con-trung",
+                    group: ["trong-trot"],
+                    label: "Côn trùng"
+                },
+                {
+                    value: "nhen",
+                    group: ["trong-trot"],
+                    label: "Nhện"
+                },
+                {
+                    value: "co-dai",
+                    group: ["trong-trot"],
+                    label: "Cỏ dại"
+                },
+                {
+                    value: "dong-vat-gam-nham-oc-sen",
+                    group: ["trong-trot"],
+                    label: "Động vật gặm nhấm, ốc sên"
+                }
+            ]
         }
     ],
     "vung-canh-tac": [
@@ -585,6 +643,53 @@ export const filterFieldsByLayer = {
                     label: "Vật thể phải phân tích nguy cơ khi NK"
                 }
             ]
+        },
+        {
+            id: "tac-nhan-gay-benh",
+            label: "Tác nhân gây bệnh",
+            type: "text",
+            options: [
+                {
+                    value: "virus-va-viroid",
+                    group: ["trong-trot", "chan-nuoi", "thuy-san"],
+                    label: "Virus và viroid"
+                },
+                {
+                    value: "vi-khuan",
+                    group: ["trong-trot", "chan-nuoi", "thuy-san"],
+                    label: "Vi khuẩn"
+                },
+                {
+                    value: "nam",
+                    group: ["trong-trot", "chan-nuoi", "thuy-san"],
+                    label: "Nấm"
+                },
+                {
+                    value: "ky-sinh-trung",
+                    group: ["trong-trot", "chan-nuoi", "thuy-san"],
+                    label: "Ký sinh trùng"
+                },
+                {
+                    value: "con-trung",
+                    group: ["trong-trot"],
+                    label: "Côn trùng"
+                },
+                {
+                    value: "nhen",
+                    group: ["trong-trot"],
+                    label: "Nhện"
+                },
+                {
+                    value: "co-dai",
+                    group: ["trong-trot"],
+                    label: "Cỏ dại"
+                },
+                {
+                    value: "dong-vat-gam-nham-oc-sen",
+                    group: ["trong-trot"],
+                    label: "Động vật gặm nhấm, ốc sên"
+                }
+            ]
         }
     ],
     "vung-dich-benh": [
@@ -722,6 +827,53 @@ export const filterFieldsByLayer = {
                     value: "tt-03",
                     group: "trong-trot",
                     label: "Vật thể phải phân tích nguy cơ khi NK"
+                }
+            ]
+        },
+        {
+            id: "tac-nhan-gay-benh",
+            label: "Tác nhân gây bệnh",
+            type: "text",
+            options: [
+                {
+                    value: "virus-va-viroid",
+                    group: ["trong-trot", "chan-nuoi", "thuy-san"],
+                    label: "Virus và viroid"
+                },
+                {
+                    value: "vi-khuan",
+                    group: ["trong-trot", "chan-nuoi", "thuy-san"],
+                    label: "Vi khuẩn"
+                },
+                {
+                    value: "nam",
+                    group: ["trong-trot", "chan-nuoi", "thuy-san"],
+                    label: "Nấm"
+                },
+                {
+                    value: "ky-sinh-trung",
+                    group: ["trong-trot", "chan-nuoi", "thuy-san"],
+                    label: "Ký sinh trùng"
+                },
+                {
+                    value: "con-trung",
+                    group: ["trong-trot"],
+                    label: "Côn trùng"
+                },
+                {
+                    value: "nhen",
+                    group: ["trong-trot"],
+                    label: "Nhện"
+                },
+                {
+                    value: "co-dai",
+                    group: ["trong-trot"],
+                    label: "Cỏ dại"
+                },
+                {
+                    value: "dong-vat-gam-nham-oc-sen",
+                    group: ["trong-trot"],
+                    label: "Động vật gặm nhấm, ốc sên"
                 }
             ]
         }

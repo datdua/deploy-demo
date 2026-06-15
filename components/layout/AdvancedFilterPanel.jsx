@@ -47,6 +47,15 @@ function getFieldValue(filters, fieldId) {
 
 // Tính danh sách option được phép hiển thị cho 1 field, dựa trên
 // fieldDependencies (rule dạng "rules": lọc theo giá trị field nguồn)
+function matchesGroup(optGroup, target) {
+    if (Array.isArray(optGroup)) {
+        if (Array.isArray(target)) return optGroup.some((g) => target.includes(g));
+        return optGroup.includes(target);
+    }
+    if (Array.isArray(target)) return target.includes(optGroup);
+    return optGroup === target;
+}
+
 function getAllowedOptions(layerId, fieldId, fieldDef, filters) {
     const deps = fieldDependencies[layerId] ?? [];
     const rule = deps.find((d) => d.target === fieldId);
@@ -61,7 +70,7 @@ function getAllowedOptions(layerId, fieldId, fieldDef, filters) {
 
         if (rule.filterByGroup) {
             return (fieldDef?.options ?? []).filter((opt) =>
-                allowedValues.includes(opt.group)
+                matchesGroup(opt.group, allowedValues)
             );
         }
         return (fieldDef?.options ?? []).filter((opt) =>
@@ -70,13 +79,11 @@ function getAllowedOptions(layerId, fieldId, fieldDef, filters) {
     }
 
     // Pattern 1b: 1 source + filterByGroup, KHÔNG có rules
-    // - source chưa chọn ("") -> show tất cả option
-    // - source có giá trị -> chỉ lấy option có opt.group === sourceValue
     if (rule.source && rule.filterByGroup) {
         const sourceValue = getFieldValue(filters, rule.source);
         if (!sourceValue) return fieldDef?.options ?? [];
-        return (fieldDef?.options ?? []).filter(
-            (opt) => opt.group === sourceValue
+        return (fieldDef?.options ?? []).filter((opt) =>
+            matchesGroup(opt.group, sourceValue)
         );
     }
 
@@ -93,7 +100,7 @@ function getAllowedOptions(layerId, fieldId, fieldDef, filters) {
 
         if (rule.filterByGroup) {
             return (fieldDef?.options ?? []).filter((opt) =>
-                allowedValues.includes(opt.group)
+                matchesGroup(opt.group, allowedValues)
             );
         }
         return (fieldDef?.options ?? []).filter((opt) =>
@@ -103,30 +110,31 @@ function getAllowedOptions(layerId, fieldId, fieldDef, filters) {
 
     // Pattern 3: multiSource + filterByGroup, KHÔNG có rules
     if (rule.multiSource && rule.filterByGroup) {
-    const activeSource = rule.sources.find(
-        (srcId) => getFieldValue(filters, srcId) !== ""
-    );
-    if (!activeSource) return fieldDef?.options ?? [];
+        const activeSource = rule.sources.find(
+            (srcId) => getFieldValue(filters, srcId) !== ""
+        );
+        if (!activeSource) return fieldDef?.options ?? [];
 
-    const sourceValue = getFieldValue(filters, activeSource);
+        const sourceValue = getFieldValue(filters, activeSource);
 
-    if (!rule.transitiveVia || activeSource === rule.transitiveVia) {
-        return (fieldDef?.options ?? []).filter(
-            (opt) => opt.group === sourceValue
+        if (!rule.transitiveVia || activeSource === rule.transitiveVia) {
+            return (fieldDef?.options ?? []).filter((opt) =>
+                matchesGroup(opt.group, sourceValue)
+            );
+        }
+
+        const viaFieldDef = getFilterFields(layerId).find(
+            (f) => f.id === rule.transitiveVia
+        );
+        const allowedGroups = (viaFieldDef?.options ?? [])
+            .filter((opt) => matchesGroup(opt.group, sourceValue))
+            .map((opt) => opt.value);
+
+        return (fieldDef?.options ?? []).filter((opt) =>
+            matchesGroup(opt.group, allowedGroups)
         );
     }
 
-    const viaFieldDef = getFilterFields(layerId).find(
-        (f) => f.id === rule.transitiveVia
-    );
-    const allowedGroups = (viaFieldDef?.options ?? [])
-        .filter((opt) => opt.group === sourceValue)
-        .map((opt) => opt.value);
-
-    return (fieldDef?.options ?? []).filter((opt) =>
-        allowedGroups.includes(opt.group)
-    );
-}
     return fieldDef?.options ?? [];
 }
 
