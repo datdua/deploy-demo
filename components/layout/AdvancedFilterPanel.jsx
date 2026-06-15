@@ -9,24 +9,18 @@ import {
     defaultFilterFields,
 } from "@/data/advancedFilterData";
 import styles from "@/styles/modules/Dashboard.module.css";
-
-// Gộp tất cả layer từ các group thành 1 danh sách phẳng để chọn trong "+ Thêm lớp dữ liệu"
 const allLayers = layerGroups.flatMap((group) =>
     group.layers.map((layer) => ({
         ...layer,
         groupTitle: group.title,
     }))
 );
-
 function getLayerInfo(layerId) {
     return allLayers.find((l) => l.id === layerId);
 }
-
 function getFilterFields(layerId) {
     return filterFieldsByLayer[layerId] ?? defaultFilterFields;
 }
-
-// Tạo 1 "trường lọc" trống cho 1 lớp dữ liệu (mặc định chọn field đầu tiên)
 function createEmptyFilterField(layerId, usedFieldIds = []) {
     const fields = getFilterFields(layerId);
     const firstAvailable = fields.find((f) => !usedFieldIds.includes(f.id));
@@ -36,17 +30,10 @@ function createEmptyFilterField(layerId, usedFieldIds = []) {
         value: "",
     };
 }
-
-// Lấy giá trị hiện tại của 1 field (theo fieldId) trong danh sách filters của 1 layer
-// Nếu field đó chưa được thêm vào filters (không có row nào dùng fieldId này),
-// trả về "" -> coi như "chưa chọn".
 function getFieldValue(filters, fieldId) {
     const row = filters.find((f) => f.fieldId === fieldId);
     return row?.value ?? "";
 }
-
-// Tính danh sách option được phép hiển thị cho 1 field, dựa trên
-// fieldDependencies (rule dạng "rules": lọc theo giá trị field nguồn)
 function matchesGroup(optGroup, target) {
     if (Array.isArray(optGroup)) {
         if (Array.isArray(target)) return optGroup.some((g) => target.includes(g));
@@ -55,19 +42,14 @@ function matchesGroup(optGroup, target) {
     if (Array.isArray(target)) return target.includes(optGroup);
     return optGroup === target;
 }
-
 function getAllowedOptions(layerId, fieldId, fieldDef, filters) {
     const deps = fieldDependencies[layerId] ?? [];
     const rule = deps.find((d) => d.target === fieldId);
-
     if (!rule) return fieldDef?.options ?? [];
-
-    // Pattern 1: 1 source + rules
     if (rule.source && rule.rules) {
         const sourceValue = getFieldValue(filters, rule.source);
         const allowedValues = rule.rules[sourceValue] ?? rule.rules[""] ?? null;
         if (!allowedValues) return fieldDef?.options ?? [];
-
         if (rule.filterByGroup) {
             return (fieldDef?.options ?? []).filter((opt) =>
                 matchesGroup(opt.group, allowedValues)
@@ -77,8 +59,6 @@ function getAllowedOptions(layerId, fieldId, fieldDef, filters) {
             allowedValues.includes(opt.value)
         );
     }
-
-    // Pattern 1b: 1 source + filterByGroup, KHÔNG có rules
     if (rule.source && rule.filterByGroup) {
         const sourceValue = getFieldValue(filters, rule.source);
         if (!sourceValue) return fieldDef?.options ?? [];
@@ -86,8 +66,6 @@ function getAllowedOptions(layerId, fieldId, fieldDef, filters) {
             matchesGroup(opt.group, sourceValue)
         );
     }
-
-    // Pattern 2: multiSource + rules
     if (rule.multiSource && rule.rules) {
         const activeSource = rule.sources.find(
             (srcId) => getFieldValue(filters, srcId) !== ""
@@ -97,7 +75,6 @@ function getAllowedOptions(layerId, fieldId, fieldDef, filters) {
             : "";
         const allowedValues = rule.rules[resolvedValue] ?? rule.rules[""] ?? null;
         if (!allowedValues) return fieldDef?.options ?? [];
-
         if (rule.filterByGroup) {
             return (fieldDef?.options ?? []).filter((opt) =>
                 matchesGroup(opt.group, allowedValues)
@@ -107,62 +84,45 @@ function getAllowedOptions(layerId, fieldId, fieldDef, filters) {
             allowedValues.includes(opt.value)
         );
     }
-
-    // Pattern 3: multiSource + filterByGroup, KHÔNG có rules
     if (rule.multiSource && rule.filterByGroup) {
         const activeSource = rule.sources.find(
             (srcId) => getFieldValue(filters, srcId) !== ""
         );
         if (!activeSource) return fieldDef?.options ?? [];
-
         const sourceValue = getFieldValue(filters, activeSource);
-
         if (!rule.transitiveVia || activeSource === rule.transitiveVia) {
             return (fieldDef?.options ?? []).filter((opt) =>
                 matchesGroup(opt.group, sourceValue)
             );
         }
-
         const viaFieldDef = getFilterFields(layerId).find(
             (f) => f.id === rule.transitiveVia
         );
         const allowedGroups = (viaFieldDef?.options ?? [])
             .filter((opt) => matchesGroup(opt.group, sourceValue))
             .map((opt) => opt.value);
-
         return (fieldDef?.options ?? []).filter((opt) =>
             matchesGroup(opt.group, allowedGroups)
         );
     }
-
     return fieldDef?.options ?? [];
 }
-
-// Kiểm tra field có bị khoá hoàn toàn (không cho chọn giá trị) không,
-// dựa trên rule dạng "sources" + "allowedValues"
 function isFieldLocked(layerId, fieldId, filters) {
-  const deps = fieldDependencies[layerId] ?? [];
-  const rule = deps.find((d) => d.target === fieldId && d.sources);
-
-  // Rule multiSource dùng để lọc options, không dùng để lock field
-  if (!rule || rule.multiSource) return false;
-
-  return rule.sources.some((sourceFieldId) => {
-    const sourceValue = getFieldValue(filters, sourceFieldId);
-    const allowed = rule.allowedValues[sourceFieldId] ?? [""];
-    return !allowed.includes(sourceValue);
-  });
+    const deps = fieldDependencies[layerId] ?? [];
+    const rule = deps.find((d) => d.target === fieldId && d.sources);
+    if (!rule || rule.multiSource) return false;
+    return rule.sources.some((sourceFieldId) => {
+        const sourceValue = getFieldValue(filters, sourceFieldId);
+        const allowed = rule.allowedValues[sourceFieldId] ?? [""];
+        return !allowed.includes(sourceValue);
+    });
 }
-
 export default function AdvancedFilterPanel({ onClose }) {
-    // selectedLayers: [{ layerId, filters: [{ rowId, fieldId, value }] }]
     const [selectedLayers, setSelectedLayers] = useState([]);
     const [layerToAdd, setLayerToAdd] = useState("");
-
     const availableLayers = allLayers.filter(
         (l) => !selectedLayers.some((sl) => sl.layerId === l.id)
     );
-
     const handleAddLayer = () => {
         if (!layerToAdd) return;
         setSelectedLayers((prev) => [
@@ -174,11 +134,9 @@ export default function AdvancedFilterPanel({ onClose }) {
         ]);
         setLayerToAdd("");
     };
-
     const handleRemoveLayer = (layerId) => {
         setSelectedLayers((prev) => prev.filter((sl) => sl.layerId !== layerId));
     };
-
     const handleAddFilterField = (layerId) => {
         setSelectedLayers((prev) =>
             prev.map((sl) =>
@@ -197,7 +155,6 @@ export default function AdvancedFilterPanel({ onClose }) {
             )
         );
     };
-
     const handleRemoveFilterField = (layerId, rowId) => {
         setSelectedLayers((prev) =>
             prev.map((sl) =>
@@ -207,7 +164,6 @@ export default function AdvancedFilterPanel({ onClose }) {
             )
         );
     };
-
     const handleFieldChange = (layerId, rowId, fieldId) => {
         setSelectedLayers((prev) =>
             prev.map((sl) =>
@@ -222,46 +178,30 @@ export default function AdvancedFilterPanel({ onClose }) {
             )
         );
     };
-
-    // Khi 1 field đổi giá trị, các field khác đang phụ thuộc vào nó (theo
-    // fieldDependencies) có thể không còn hợp lệ với option/lock mới ->
-    // reset giá trị của các field đó về "" để tránh giữ giá trị không hợp lệ.
     const handleValueChange = (layerId, rowId, value) => {
         setSelectedLayers((prev) =>
             prev.map((sl) => {
                 if (sl.layerId !== layerId) return sl;
-
                 const changedFilter = sl.filters.find((f) => f.rowId === rowId);
                 const changedFieldId = changedFilter?.fieldId;
                 const deps = fieldDependencies[layerId] ?? [];
-
-                // Trước tiên cập nhật giá trị field đang đổi
                 let nextFilters = sl.filters.map((f) =>
                     f.rowId === rowId ? { ...f, value } : f
                 );
-
-                // Tìm các field target phụ thuộc vào field vừa đổi -> reset value
-                // nếu giá trị hiện tại không còn nằm trong danh sách option cho phép,
-                // hoặc field bị khoá hoàn toàn sau khi đổi.
                 deps.forEach((dep) => {
                     const dependsOnChanged =
                         dep.source === changedFieldId ||
                         (dep.sources && dep.sources.includes(changedFieldId));
-
                     if (!dependsOnChanged) return;
-
                     nextFilters = nextFilters.map((f) => {
                         if (f.fieldId !== dep.target) return f;
-
                         const fieldDef = getFilterFields(layerId).find(
                             (fd) => fd.id === f.fieldId
                         );
-
                         const locked = isFieldLocked(layerId, f.fieldId, nextFilters);
                         if (locked) {
                             return { ...f, value: "" };
                         }
-
                         const allowedOptions = getAllowedOptions(
                             layerId,
                             f.fieldId,
@@ -274,23 +214,18 @@ export default function AdvancedFilterPanel({ onClose }) {
                         return stillValid ? f : { ...f, value: "" };
                     });
                 });
-
                 return { ...sl, filters: nextFilters };
             })
         );
     };
-
     const handleClearAll = () => {
         setSelectedLayers([]);
         setLayerToAdd("");
     };
-
     const handleApply = () => {
-        // Demo: chưa lọc dữ liệu thật trên bản đồ, chỉ log kết quả bộ lọc hiện tại
         console.log("Bộ lọc áp dụng:", selectedLayers);
         onClose?.();
     };
-
     return (
         <div className={styles.advFilterPanel}>
             <div className={styles.advFilterHeader}>
@@ -303,7 +238,6 @@ export default function AdvancedFilterPanel({ onClose }) {
                     <X size={16} />
                 </button>
             </div>
-
             <div className={styles.advFilterBody}>
                 {selectedLayers.length === 0 && (
                     <div className={styles.advFilterEmpty}>
@@ -318,11 +252,9 @@ export default function AdvancedFilterPanel({ onClose }) {
                         </span>
                     </div>
                 )}
-
                 {selectedLayers.map((sl) => {
                     const layerInfo = getLayerInfo(sl.layerId);
                     const fields = getFilterFields(sl.layerId);
-
                     return (
                         <div key={sl.layerId} className={styles.advFilterLayerCard}>
                             <div className={styles.advFilterLayerHeader}>
@@ -341,7 +273,6 @@ export default function AdvancedFilterPanel({ onClose }) {
                                     <Trash2 size={14} />
                                 </button>
                             </div>
-
                             {sl.filters.map((filter) => {
                                 const fieldDef = fields.find((f) => f.id === filter.fieldId);
                                 const locked = isFieldLocked(sl.layerId, filter.fieldId, sl.filters);
@@ -351,7 +282,6 @@ export default function AdvancedFilterPanel({ onClose }) {
                                     fieldDef,
                                     sl.filters
                                 );
-
                                 return (
                                     <div key={filter.rowId} className={styles.advFilterFieldRow}>
                                         <div className={styles.advFilterFieldSelects}>
@@ -397,7 +327,6 @@ export default function AdvancedFilterPanel({ onClose }) {
                                                     ))}
                                             </Select>
                                         </div>
-
                                         {sl.filters.length > 1 && (
                                             <button
                                                 className={styles.advFilterFieldRemove}
@@ -426,7 +355,6 @@ export default function AdvancedFilterPanel({ onClose }) {
                         </div>
                     );
                 })}
-
                 <div className={styles.advFilterAddLayerRow}>
                     <div className={styles.advFilterAddLayerSelect}>
                         <Select
@@ -456,7 +384,6 @@ export default function AdvancedFilterPanel({ onClose }) {
                         Xoá tất cả
                     </Button>
                 </div>
-
                 {layerToAdd && (
                     <Button size="sm" className="text-xs" onClick={handleAddLayer}>
                         <Plus size={13} className="mr-1" />
@@ -464,7 +391,6 @@ export default function AdvancedFilterPanel({ onClose }) {
                     </Button>
                 )}
             </div>
-
             <div className={styles.advFilterFooter}>
                 <Button className="w-full text-xs" onClick={handleApply}>
                     <Filter size={14} className="mr-1.5" />
