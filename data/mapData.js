@@ -131,19 +131,21 @@ export const layerGroups = [
 
 // Các điểm đánh dấu hiển thị trên ảnh bản đồ (toạ độ tính theo % so với khung ảnh)
 // Dùng để render các marker tròn đè lên ảnh nền bản đồ
+// lookupItemId: liên kết tới bản ghi tương ứng trong data/lookupData.js (lookupItems)
+// để popup marker có thể hiển thị đầy đủ tab "Tổng quan" + "Chi tiết"
 export const mapMarkers = [
-  { id: "m1", type: "vung-canh-tac", x: 51.0, y: 81.3, label: "Vùng canh tác lúa - Cần Thơ" },
-  { id: "m2", type: "vung-canh-tac", x: 52.0, y: 83.5, label: "Vùng canh tác - Hậu Giang" },
-  { id: "m3", type: "vung-canh-tac", x: 53.5, y: 84.0, label: "Vùng canh tác - Sóc Trăng" },
-  { id: "m4", type: "vung-canh-tac", x: 53.8, y: 78.2, label: "Vùng canh tác - Vĩnh Long" },
+  { id: "m1", type: "vung-canh-tac", x: 51.0, y: 81.3, label: "Vùng canh tác lúa - Cần Thơ", lookupItemId: "lk-002" },
+  { id: "m2", type: "vung-canh-tac", x: 52.0, y: 83.5, label: "Vùng canh tác - Hậu Giang", lookupItemId: "lk-003" },
+  { id: "m3", type: "vung-canh-tac", x: 53.5, y: 84.0, label: "Vùng canh tác - Sóc Trăng", lookupItemId: "lk-004" },
+  { id: "m4", type: "vung-canh-tac", x: 53.8, y: 78.2, label: "Vùng canh tác - Vĩnh Long", lookupItemId: "lk-005" },
 
-  { id: "m5", type: "cong-ty-htx", x: 54.0, y: 78.0, label: "HTX Nông nghiệp Vĩnh Long" },
-  { id: "m6", type: "cong-ty-htx", x: 52.5, y: 82.0, label: "Công ty TNHH Nông sản Cần Thơ" },
-  { id: "m7", type: "cong-ty-htx", x: 53.6, y: 84.3, label: "HTX Lúa gạo Sóc Trăng" },
+  { id: "m5", type: "cong-ty-htx", x: 54.0, y: 78.0, label: "HTX Nông nghiệp Vĩnh Long", lookupItemId: "lk-001" },
+  { id: "m6", type: "cong-ty-htx", x: 52.5, y: 82.0, label: "Công ty TNHH Nông sản Cần Thơ", lookupItemId: "lk-009" },
+  { id: "m7", type: "cong-ty-htx", x: 53.6, y: 84.3, label: "HTX Lúa gạo Sóc Trăng", lookupItemId: "lk-010" },
 
-  { id: "m8", type: "vung-dich-benh", x: 51.5, y: 79.8, label: "Vùng dịch bệnh - Cần Thơ" },
-  { id: "m9", type: "vung-dich-benh", x: 52.0, y: 84.5, label: "Vùng dịch bệnh - Hậu Giang" },
-  { id: "m10", type: "vung-dich-benh", x: 52.8, y: 86.0, label: "Vùng dịch bệnh - Bạc Liêu" },
+  { id: "m8", type: "vung-dich-benh", x: 51.5, y: 79.8, label: "Vùng dịch bệnh - Cần Thơ", lookupItemId: "lk-007" },
+  { id: "m9", type: "vung-dich-benh", x: 52.0, y: 84.5, label: "Vùng dịch bệnh - Hậu Giang", lookupItemId: "lk-006" },
+  { id: "m10", type: "vung-dich-benh", x: 52.8, y: 86.0, label: "Vùng dịch bệnh - Bạc Liêu", lookupItemId: "lk-008" },
 ];
 
 // Cấu hình thanh công cụ trên cùng (toolbar)

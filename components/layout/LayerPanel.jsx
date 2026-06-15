@@ -141,7 +141,7 @@ export default function LayerPanel({ showDataTable, onToggleDataTable }) {
 
               <CollapsibleContent>
                 {group.layers.map((layer) => (
-                  <div key={layer.id}>
+                  <div key={`${group.id}-${layer.id}`}>
                     <label className={styles.layerRow}>
                       <span
                         className={styles.layerDot}

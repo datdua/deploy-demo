@@ -734,6 +734,15 @@
   overflow: hidden;
 }
 
+/* Popup chi tiết hiển thị khi click vào marker trên bản đồ */
+.markerPopup {
+  width: 320px;
+  max-width: 90vw;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 .detailPanelHeader {
   display: flex;
   align-items: flex-start;
