@@ -14,26 +14,27 @@ export const layerGroups = [
       {
         id: "cong-ty-htx",
         label: "Công ty/HTX",
-        color: "#803c15", // green-700 (đậm hơn, viền trắng)
+        color: "#803c15",
         visible: true,
         count: 24,
       },
-            {
+      {
         id: "vung-canh-tac",
         label: "Vùng canh tác",
-        color: "#16a34a", // green-600
+        color: "#16a34a",
         visible: true,
         count: 128,
       },
       {
         id: "vung-dich-benh",
         label: "Vùng dịch bệnh",
-        color: "#dc2626", // red-600
+        color: "#dc2626",
         visible: true,
         count: 9,
       },
     ],
   },
+
   {
     id: "ban-hang",
     title: "Kênh bán hàng",
@@ -42,21 +43,29 @@ export const layerGroups = [
     visible: true,
     layers: [
       {
-        id: "trang-trai",
-        label: "Trang trại chăn nuôi",
-        color: "#d97706", // amber-600
+        id: "cong-ty-htx",
+        label: "Công ty/HTX",
+        color: "#803c15",
         visible: true,
-        count: 56,
+        count: 24,
       },
       {
-        id: "vung-kiem-dich",
-        label: "Vùng kiểm dịch",
-        color: "#ea580c", // orange-600
-        visible: false,
-        count: 4,
+        id: "vung-canh-tac",
+        label: "Vùng canh tác",
+        color: "#16a34a",
+        visible: true,
+        count: 128,
+      },
+      {
+        id: "vung-dich-benh",
+        label: "Vùng dịch bệnh",
+        color: "#dc2626",
+        visible: true,
+        count: 9,
       },
     ],
   },
+
   {
     id: "doanh-nghiep",
     title: "Doanh nghiệp",
@@ -65,21 +74,29 @@ export const layerGroups = [
     visible: true,
     layers: [
       {
-        id: "vung-nuoi-trong",
-        label: "Vùng nuôi trồng",
-        color: "#0284c7", // sky-600
+        id: "cong-ty-htx",
+        label: "Công ty/HTX",
+        color: "#803c15",
         visible: true,
-        count: 37,
+        count: 24,
       },
       {
-        id: "cang-ca",
-        label: "Cảng cá / Bến cá",
-        color: "#0369a1", // sky-700
+        id: "vung-canh-tac",
+        label: "Vùng canh tác",
+        color: "#16a34a",
         visible: true,
-        count: 6,
+        count: 128,
+      },
+      {
+        id: "vung-dich-benh",
+        label: "Vùng dịch bệnh",
+        color: "#dc2626",
+        visible: true,
+        count: 9,
       },
     ],
   },
+
   {
     id: "nong-ho",
     title: "Nông hộ",
@@ -88,25 +105,25 @@ export const layerGroups = [
     visible: true,
     layers: [
       {
-        id: "ranh-gioi-tinh",
-        label: "Ranh giới Tỉnh/TP",
-        color: "#2563eb", // blue-600
+        id: "cong-ty-htx",
+        label: "Công ty/HTX",
+        color: "#803c15",
         visible: true,
-        count: null,
+        count: 24,
       },
       {
-        id: "ranh-gioi-huyen",
-        label: "Ranh giới Huyện",
-        color: "#60a5fa", // blue-400
-        visible: false,
-        count: null,
+        id: "vung-canh-tac",
+        label: "Vùng canh tác",
+        color: "#16a34a",
+        visible: true,
+        count: 128,
       },
       {
-        id: "ranh-gioi-xa",
-        label: "Ranh giới Xã",
-        color: "#93c5fd", // blue-300
-        visible: false,
-        count: null,
+        id: "vung-dich-benh",
+        label: "Vùng dịch bệnh",
+        color: "#dc2626",
+        visible: true,
+        count: 9,
       },
     ],
   },

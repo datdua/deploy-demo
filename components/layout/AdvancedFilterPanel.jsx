@@ -58,8 +58,25 @@ function getAllowedOptions(layerId, fieldId, fieldDef, filters) {
         const sourceValue = getFieldValue(filters, rule.source);
         const allowedValues = rule.rules[sourceValue] ?? rule.rules[""] ?? null;
         if (!allowedValues) return fieldDef?.options ?? [];
+
+        if (rule.filterByGroup) {
+            return (fieldDef?.options ?? []).filter((opt) =>
+                allowedValues.includes(opt.group)
+            );
+        }
         return (fieldDef?.options ?? []).filter((opt) =>
             allowedValues.includes(opt.value)
+        );
+    }
+
+    // Pattern 1b: 1 source + filterByGroup, KHÔNG có rules
+    // - source chưa chọn ("") -> show tất cả option
+    // - source có giá trị -> chỉ lấy option có opt.group === sourceValue
+    if (rule.source && rule.filterByGroup) {
+        const sourceValue = getFieldValue(filters, rule.source);
+        if (!sourceValue) return fieldDef?.options ?? [];
+        return (fieldDef?.options ?? []).filter(
+            (opt) => opt.group === sourceValue
         );
     }
 
@@ -74,7 +91,6 @@ function getAllowedOptions(layerId, fieldId, fieldDef, filters) {
         const allowedValues = rule.rules[resolvedValue] ?? rule.rules[""] ?? null;
         if (!allowedValues) return fieldDef?.options ?? [];
 
-        // filterByGroup: so sánh opt.group thay vì opt.value
         if (rule.filterByGroup) {
             return (fieldDef?.options ?? []).filter((opt) =>
                 allowedValues.includes(opt.group)
